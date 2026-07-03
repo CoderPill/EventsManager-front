@@ -1,0 +1,142 @@
+<div class="events-container">
+  <div class="header">
+    <h1>Eventos Disponibles</h1>
+      @if (auth.isLoggedIn()) {
+      <button mat-raised-button color="primary" (click)="openCreateEvent()">
+        <mat-icon>add</mat-icon>
+        Crear Evento
+      </button>
+    }
+  </div>
+
+  <div class="filters-toolbar">
+    <form [formGroup]="filterForm" class="filters-form">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="title" placeholder="Filtrar por título" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="">Todos</mat-option>
+          <mat-option value="1">Conferencia</mat-option>
+          <mat-option value="2">Taller</mat-option>
+          <mat-option value="3">Concierto</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="">Todos</mat-option>
+          <mat-option value="1">Activo</mat-option>
+          <mat-option value="2">Cancelado</mat-option>
+          <mat-option value="3">Completado</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Fecha Desde</mat-label>
+        <input matInput [matDatepicker]="startFromPicker" formControlName="startDateFrom" />
+        <mat-datepicker-toggle matIconSuffix [for]="startFromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startFromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Fecha Hasta</mat-label>
+        <input matInput [matDatepicker]="startToPicker" formControlName="startDateTo" />
+        <mat-datepicker-toggle matIconSuffix [for]="startToPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startToPicker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-stroked-button type="button" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+      </button>
+    </form>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40" />
+    </div>
+  }
+
+  @if (errorMsg()) {
+    <div class="error-state">
+      <mat-icon>error</mat-icon>
+      <p>{{ errorMsg() }}</p>
+      <button mat-raised-button (click)="loadEvents()">Reintentar</button>
+    </div>
+  }
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort class="events-table">
+      <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
+          <td mat-cell *matCellDef="let event"> {{ event.title }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+          <td mat-cell *matCellDef="let event"> {{ event.type | enumLabel:'EventType' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
+          <td mat-cell *matCellDef="let event"> {{ event.startDate | dateFormat }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio </th>
+          <td mat-cell *matCellDef="let event"> {{ event.price | currency:'USD':'symbol':'1.2-2' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="venue">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Lugar </th>
+          <td mat-cell *matCellDef="let event"> {{ event.venue?.name || 'N/A' }} ({{ event.venue?.city || 'N/A' }}) </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+          <td mat-cell *matCellDef="let event">
+            <span class="status-badge" [ngClass]="'status-' + getStatusClass(event.status)">
+              {{ event.status | enumLabel:'EventStatus' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let event">
+            <button mat-raised-button color="primary"
+                    [disabled]="event.status !== 1 || !event.isActive"
+                    (click)="openReservation(event)"
+                    matTooltip="Realizar reserva">
+              <mat-icon>confirmation_number</mat-icon>
+              Reservar
+            </button>
+            @if (auth.isLoggedIn()) {
+              <button mat-icon-button color="accent"
+                      (click)="openReport(event.id)"
+                      matTooltip="Ver reporte de ocupación">
+                <mat-icon>assessment</mat-icon>
+              </button>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+      @if (dataSource.data.length === 0 && !loading() && !errorMsg()) {
+        <div class="empty-state">
+          <mat-icon>event_busy</mat-icon>
+          <p>No hay eventos disponibles</p>
+        </div>
+      }
+    </div>
+</div>

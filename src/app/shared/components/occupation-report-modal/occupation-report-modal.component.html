@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Reporte de Ocupación</h2>
+<mat-dialog-content>
+  @if (loading()) {
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  } @else {
+    @if (errorMessage) {
+      <div class="error">{{ errorMessage }}</div>
+    }
+    @if (report) {
+      <table class="report-table">
+        <tr><th>Evento</th><td>{{ report.title }}</td></tr>
+        <tr><th>Capacidad total</th><td>{{ report.totalTicketsAvailable }}</td></tr>
+        <tr><th>Entradas vendidas</th><td>{{ report.totalTicketsSold }}</td></tr>
+        <tr><th>Disponibles</th><td>{{ report.totalTicketsAvailable - report.totalTicketsSold }}</td></tr>
+        <tr><th>% Ocupación</th><td>{{ report.occupancyPercentage | number:'1.0-0' }}%</td></tr>
+        <tr><th>Ingresos</th><td>{{ report.totalRevenue | currency:'USD':'symbol':'1.2-2' }}</td></tr>
+      </table>
+    }
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

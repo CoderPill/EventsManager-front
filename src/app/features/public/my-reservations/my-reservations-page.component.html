@@ -1,0 +1,71 @@
+<div class="my-reservation-container">
+  <h1>Consultar mi Reserva</h1>
+  <p class="subtitle">Ingresá tu email y el código de reserva para consultar el estado.</p>
+
+  <div class="search-card">
+    <form [formGroup]="searchForm" (ngSubmit)="search()" class="search-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="tu@email.com" autocomplete="email" />
+        @if (searchForm.get('email')?.hasError('required')) {
+          <mat-error>Email requerido</mat-error>
+        }
+        @if (searchForm.get('email')?.hasError('email')) {
+          <mat-error>Formato inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Código de reserva</mat-label>
+        <input matInput formControlName="code" placeholder="EV-XXXXXX" />
+        @if (searchForm.get('code')?.hasError('required')) {
+          <mat-error>Código requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.invalid || loading()" class="full-width">
+        @if (loading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          <span><mat-icon>search</mat-icon> Consultar</span>
+        }
+      </button>
+    </form>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="error-msg">
+      <mat-icon>error</mat-icon>
+      <p>{{ errorMsg() }}</p>
+    </div>
+  }
+
+  @if (reservation(); as r) {
+    <div class="result-card">
+      <h2>Reserva Encontrada</h2>
+      <div class="result-body">
+        <div class="row"><strong>Código:</strong> {{ r.reservationCode }}</div>
+        <div class="row"><strong>Evento:</strong> {{ r.event?.title }}</div>
+        <div class="row"><strong>Fecha:</strong> {{ r.event?.startDate | dateFormat }}</div>
+        <div class="row"><strong>Comprador:</strong> {{ r.buyerName }}</div>
+        <div class="row"><strong>Email:</strong> {{ r.buyerEmail }}</div>
+        <div class="row"><strong>Cantidad:</strong> {{ r.quantity }}</div>
+        <div class="row"><strong>Estado:</strong> {{ r.status | enumLabel:'ReservationStatus' }}</div>
+      </div>
+
+      @if (r.status === 2) {
+        <button mat-flat-button color="warn" (click)="cancel(r)" [disabled]="cancelling()" class="full-width">
+          @if (cancelling()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Cancelar Reserva
+          }
+        </button>
+      }
+
+      <button mat-button (click)="reset()" class="full-width" style="margin-top: 8px;">
+        Nueva consulta
+      </button>
+    </div>
+  }
+</div>

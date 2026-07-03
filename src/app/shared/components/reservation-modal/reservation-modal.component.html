@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Crear Reserva</h2>
+<mat-dialog-content>
+  <p><strong>{{ event.title }}</strong></p>
+  <p>Capacidad disponible: {{ maxAvailable }}</p>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Cantidad (máx {{ maxAvailable }})</mat-label>
+      <input matInput type="number" formControlName="quantity" [max]="maxAvailable" [appMaxCapacity]="maxAvailable" />
+      @if (form.get('quantity')?.hasError('required')) {
+        <mat-error>Cantidad requerida</mat-error>
+      }
+      @if (form.get('quantity')?.hasError('min')) {
+        <mat-error>Debe ser al menos 1</mat-error>
+      }
+      @if (form.get('quantity')?.hasError('max')) {
+        <mat-error>Máximo {{ maxAvailable }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="buyerName" />
+      @if (form.get('buyerName')?.hasError('required')) {
+        <mat-error>Nombre requerido</mat-error>
+      }
+      @if (form.get('buyerName')?.hasError('maxlength')) {
+        <mat-error>Máximo 32 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="buyerEmail" />
+      @if (form.get('buyerEmail')?.hasError('required')) {
+        <mat-error>Email requerido</mat-error>
+      }
+      @if (form.get('buyerEmail')?.hasError('email')) {
+        <mat-error>Formato inválido</mat-error>
+      }
+      @if (form.get('buyerEmail')?.hasError('maxlength')) {
+        <mat-error>Máximo 64 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || loading">
+        {{ loading ? 'Guardando...' : 'Confirmar' }}
+      </button>
+    </div>
+  </form>
+</mat-dialog-content>

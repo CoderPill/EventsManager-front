@@ -1,0 +1,35 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="app-title" routerLink="/">EventsManager</span>
+  <span class="spacer"></span>
+
+  <div class="nav-links">
+    <a mat-button routerLink="/">
+      <mat-icon>home</mat-icon>
+      Inicio
+    </a>
+
+    <a mat-button routerLink="/MyReservations">
+      <mat-icon>search</mat-icon>
+      Consultar Reserva
+    </a>
+
+    @if (auth.isLoggedIn()) {
+      <a mat-button routerLink="/AllReservations">
+        <mat-icon>list_alt</mat-icon>
+        Todas las Reservas
+      </a>
+    }
+
+    @if (auth.isLoggedIn()) {
+      <button mat-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesión
+      </button>
+    } @else {
+      <button mat-button (click)="openLogin()">
+        <mat-icon>login</mat-icon>
+        Iniciar Sesión
+      </button>
+    }
+  </div>
+</mat-toolbar>

@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Login de Administrador</h2>
+<mat-dialog-content>
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Usuario</mat-label>
+      <input matInput placeholder="usuario" formControlName="username" autocomplete="username" />
+      @if (loginForm.get('username')?.hasError('required')) {
+        <mat-error>El usuario es obligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Contraseña</mat-label>
+      <input matInput type="password" formControlName="password" autocomplete="current-password" />
+      @if (loginForm.get('password')?.hasError('required')) {
+        <mat-error>La contraseña es obligatoria</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="loginForm.invalid">Entrar</button>
+    </div>
+  </form>
+</mat-dialog-content>

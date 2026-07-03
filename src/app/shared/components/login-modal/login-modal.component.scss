@@ -1,0 +1,17 @@
+@use '../../../../styles/variables' as vars;
+
+h2 {
+  margin: 0 0 1rem;
+  font-weight: 500;
+}
+
+.full-width {
+  @include vars.full-width;
+}
+
+.actions {
+  @include vars.actions;
+  button + button {
+    margin-left: 0.5rem;
+  }
+}

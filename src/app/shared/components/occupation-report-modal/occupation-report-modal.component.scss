@@ -1,0 +1,11 @@
+@use '../../../../styles/variables' as vars;
+
+.report-table {
+  width: 100%;
+  th { text-align: left; padding-right: 1rem; }
+  td { font-weight: 500; }
+}
+
+.error {
+  color: #b00020;
+}

@@ -1,0 +1,21 @@
+// Colores primarios Material
+$primary: #1976d2;
+$accent: #ff4081;
+$warn: #f44336;
+
+// Espaciado
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+
+// Mixins
+@mixin full-width {
+  width: 100%;
+}
+
+@mixin actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
